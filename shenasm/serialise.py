@@ -39,5 +39,6 @@ def write_out(instructions, path):
          print('Pasting to clipboard not available, writing to file "clipboard" instead')
          # fall through to write to file "clipboard"
 
-    output = open(path, 'w')
-    output.write(content)
+    with open(path, 'w') as output:
+       output.write(content)
+
