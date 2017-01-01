@@ -1,4 +1,11 @@
+from __future__ import print_function  # Python 2 compatibility
 
+# If pyperclip is available use it to paste to clipboard
+try:
+   pyperclip_present = True
+   import pyperclip
+except:
+   pyperclip_present = False
 
 def write_out(instructions, path):
     """
@@ -6,9 +13,9 @@ def write_out(instructions, path):
     as specified by the path argument
     """
 
-    # TODO: compress label names to be single lettes etc?
+    # TODO: compress label names to be single letters etc?
+    content = ''  # Contains all the code
 
-    output = open(path, 'w')
     for inst in instructions:
         tokens = [
             piece
@@ -22,4 +29,15 @@ def write_out(instructions, path):
             spacing,
             " ".join(tokens)
         )
-        output.write(line)
+        content += line
+
+    if path.lower() == 'clipboard':
+      if pyperclip_present:
+         pyperclip.copy(content)
+         return # all done.  Could write to file "clipboard" too??
+      else:
+         print('Pasting to clipboard not available, writing to file "clipboard" instead')
+         # fall through to write to file "clipboard"
+
+    output = open(path, 'w')
+    output.write(content)
