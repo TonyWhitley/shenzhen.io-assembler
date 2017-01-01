@@ -14,7 +14,7 @@ def write_out(instructions, path):
     """
 
     # TODO: compress label names to be single letters etc?
-    content = ''  # Contains all the code
+    content = []  # Contains all the code
 
     for inst in instructions:
         tokens = [
@@ -29,16 +29,18 @@ def write_out(instructions, path):
             spacing,
             " ".join(tokens)
         )
-        content += line
+        content.append(line)
 
+    print('%d lines of code' % len(content))
+    
+    _content = ''.join(content)
     if path.lower() == 'clipboard':
       if pyperclip_present:
-         pyperclip.copy(content)
+         pyperclip.copy(_content)
          return # all done.  Could write to file "clipboard" too??
       else:
          print('Pasting to clipboard not available, writing to file "clipboard" instead')
          # fall through to write to file "clipboard"
 
     with open(path, 'w') as output:
-       output.write(content)
-
+       output.write(_content)
