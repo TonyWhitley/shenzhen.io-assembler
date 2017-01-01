@@ -34,6 +34,9 @@ def write_out(instructions, path):
     print('%d lines of code' % len(content))
     
     _content = ''.join(content)
+    # strip the last CR otherwise a program with the maximum
+    # number of lines cannot be pasted:
+    _content = _content.rstrip()  
     if path.lower() == 'clipboard':
       if pyperclip_present:
          pyperclip.copy(_content)
@@ -44,3 +47,9 @@ def write_out(instructions, path):
 
     with open(path, 'w') as output:
        output.write(_content)
+
+def main():
+  pass
+
+if __name__ == "__main__":
+    main()
