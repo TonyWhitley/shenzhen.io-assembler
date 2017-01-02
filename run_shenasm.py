@@ -36,6 +36,9 @@ def main():
 
     assembled = shenasm.assemble.assemble(issues, lines, chip)
 
+    if len(issues.errors) < 1:
+        shenasm.serialise.write_out(assembled, root_path, args.output, issues)
+
     if len(issues.issues) > 0:
         print("{} warnings and {} errors".format(
             len(issues.warnings),
@@ -44,9 +47,7 @@ def main():
         for issue in issues.issues:
             print(issue)
 
-    if len(issues.errors) < 1:
-        shenasm.serialise.write_out(assembled, args.output)
-    else:
+    if len(issues.errors) > 0:
         print("output inhibited due to errors")
         result = -1
 
