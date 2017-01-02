@@ -7,7 +7,10 @@ try:
 except:
    pyperclip_present = False
 
-def write_out(instructions, path):
+from .errors import IssueLog
+from .source import SourcePosition
+
+def write_out(instructions, source_file_path, path, issues: IssueLog):
     """
     takes a collection of instructions and writes them out to a file
     as specified by the path argument
@@ -16,7 +19,7 @@ def write_out(instructions, path):
     # TODO: compress label names to be single letters etc?
     content = []  # Contains all the code
 
-    for inst in instructions:
+    for _line_no, inst in enumerate(instructions):
         tokens = [
             piece
             for piece in [inst.label, inst.condition, inst.mneumonic] + (inst.args if inst.args is not None else [])
@@ -29,7 +32,17 @@ def write_out(instructions, path):
             spacing,
             " ".join(tokens)
         )
+        if len(line) > 18+1: # include CR in count
+            issues.error(
+                SourcePosition(source_file_path, _line_no+1),
+                'line > 18 characters "{}" (it\'s {})',
+                line.rstrip(),
+                len(line)-1
+            )
         content.append(line)
+
+    if len(issues.errors):
+        return
 
     _content = ''.join(content)
     # strip the last CR otherwise a program with the maximum
