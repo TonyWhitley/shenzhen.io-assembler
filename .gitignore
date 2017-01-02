@@ -5,3 +5,4 @@ __pycache__
 *.asm
 *.pyproj
 *.sln
+*.suo
