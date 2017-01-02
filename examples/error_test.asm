@@ -44,3 +44,11 @@ const non_integer_const non_integer_value
   mov 0 xout
   mov xout 0
 
+# jmp non-label
+  jmp redef
+  jmp 100
+
+# use label as arg
+label:
+  mov label acc
+  teq label 0
