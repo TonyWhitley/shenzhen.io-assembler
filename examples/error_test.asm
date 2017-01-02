@@ -39,3 +39,8 @@ const non_integer_const non_integer_value
   nop
   nop
   nop
+
+# undefined aliases
+  mov 0 xout
+  mov xout 0
+

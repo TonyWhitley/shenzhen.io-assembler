@@ -30,6 +30,7 @@ def assemble(issues: IssueLog, lines: [LineOfSource], chip: ChipInfo) -> [Instru
 
     # extract aliases/constants out into a dictionary
     symbol_table = symbol_pass(issues, instructions, chip)
+    label_table = label_pass(instructions)
 
     # this will track the resulting instruction list
     output = []
@@ -60,7 +61,7 @@ def assemble(issues: IssueLog, lines: [LineOfSource], chip: ChipInfo) -> [Instru
             continue
 
         # perform any transformations on this instruction required
-        assembled = assemble_instruction(issues, symbol_table, inst)
+        assembled = assemble_instruction(issues, chip, symbol_table, label_table, inst)
         if assembled is None:
             continue
 
@@ -108,7 +109,7 @@ def assemble(issues: IssueLog, lines: [LineOfSource], chip: ChipInfo) -> [Instru
     return output
 
 
-def assemble_instruction(issues: IssueLog, symbols: typing.Dict[str, Symbol], inst: [Instruction]):
+def assemble_instruction(issues: IssueLog, chip: ChipInfo, symbols: typing.Dict[str, Symbol], labels: typing.List, inst: [Instruction]):
     """
     assemble a single instruction
     :param symbols: the symbol table from the symbol_pass
@@ -155,7 +156,9 @@ def assemble_instruction(issues: IssueLog, symbols: typing.Dict[str, Symbol], in
 
         if given_arg in symbols:
             args.append(symbols[given_arg].value)
-        else:
+        elif given_arg in labels:
+            args.append(given_arg)
+        elif arg_valid(issues, chip, inst, given_arg):
             args.append(given_arg)
 
     # return a transformed instruction, where the only thing that can really change is the arguments
@@ -163,6 +166,35 @@ def assemble_instruction(issues: IssueLog, symbols: typing.Dict[str, Symbol], in
         args=args,
     )
     return result
+
+def arg_valid(issues: IssueLog, chip: ChipInfo, inst: [Instruction], given_arg):
+    # ensure that non-alias/const args are valid
+
+    # check it's a real register
+    if not chip.registers.get(given_arg, None) is None:
+        return True
+    else: # see if it parses as an integer
+        try:
+            as_integer = int(given_arg)
+        except:
+            issues.error(
+                inst.source_pos,
+                '"{}" is an invalid operand as it is not an alias nor a valid register name on this chip',
+                given_arg
+            )
+            return False
+
+        # ensure it's within the range of integers that SHENZHEN I/O requires
+        if not (-999 <= as_integer <= 999):
+            issues.error(
+                inst.source_pos,
+                '"{}" integer constants must be between -999 and 999 inclusive',
+                given_arg
+            )
+            return False
+    return True
+
+
 
 
 def symbol_pass(issues: IssueLog, instructions: [Instruction], chip: ChipInfo) -> typing.Dict[str, Symbol]:
@@ -253,4 +285,21 @@ def symbol_pass(issues: IssueLog, instructions: [Instruction], chip: ChipInfo) -
             name=name,
             value=value
         )
+    return result
+
+def label_pass(instructions: [Instruction]) -> typing.List:
+    """
+    scan through the instructions looking for label definitions, producing a table of them
+    :param issues: collection of issues generated during assembler execution
+    :param instructions: the instructions to scan
+    :param chip: information about the target chip, in order to diagnose bad register aliases
+    :return: a list of labels
+    """
+    result = []
+
+    # scan each instruction
+    for inst in instructions:
+        # if it isn't an alias/const then we don't care, skip it
+        if inst.label:
+            result.append(inst.label[:-1])
     return result

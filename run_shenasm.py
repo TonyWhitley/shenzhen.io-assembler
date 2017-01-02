@@ -52,6 +52,11 @@ def main():
 
     sys.exit(result)
 
+try:
+  import pyperclip
+  outpath_help = 'the output file path. Use -o CLIPBOARD to paste output to the clipboard'
+except:
+  outpath_help = 'the output file path'
 
 def get_args() -> argparse.Namespace:
     """
@@ -67,7 +72,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '-o', '--output',
-        help='the output file path', default='out.asm'
+        help=outpath_help, default='out.asm'
     )
     parser.add_argument(
         '-c', '--chip', choices=shenasm.chips.list_names(), default=shenasm.chips.CHIP_TYPE_MC6000,

@@ -31,8 +31,6 @@ def write_out(instructions, path):
         )
         content.append(line)
 
-    print('%d lines of code' % len(content))
-    
     _content = ''.join(content)
     # strip the last CR otherwise a program with the maximum
     # number of lines cannot be pasted:
@@ -40,13 +38,15 @@ def write_out(instructions, path):
     if path.lower() == 'clipboard':
       if pyperclip_present:
          pyperclip.copy(_content)
+         print('%d lines of code pasted to clipboard' % len(content))
          return # all done.  Could write to file "clipboard" too??
       else:
-         print('Pasting to clipboard not available, writing to file "clipboard" instead')
+         print('Pasting to clipboard not available, writing to file instead')
          # fall through to write to file "clipboard"
 
     with open(path, 'w') as output:
        output.write(_content)
+    print('%d lines of code written to file "%s"' % (len(content), path))
 
 def main():
   pass
