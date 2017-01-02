@@ -21,6 +21,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
                         the output file path
+                        -o CLIPBOARD to paste it to the clipboard where
+                        possible
   -c {MC6000,MC4000,MC4000X}, --chip {MC6000,MC4000,MC4000X}
                         inform assembler of target chip for better diagnostics
   -v, --verbose         flag to cause more verbose output during execution
