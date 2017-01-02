@@ -13,7 +13,7 @@
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId />
     <InterpreterVersion />
-    <CommandLineArguments>-v -o clipboard "c:\Program Files (x86)\Steam\steamapps\common\SHENZHEN IO\Source\PrecisionFoodScale\test.asm" </CommandLineArguments>
+    <CommandLineArguments>-v -o clipboard examples\error_test.asm" </CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
