@@ -86,5 +86,5 @@ def get_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == "run_shenasm__main__": # if compiled by cx_freeze
     main()
