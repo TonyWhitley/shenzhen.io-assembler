@@ -1,3 +1,5 @@
+from __future__ import print_function  # Python 2 compatibility
+
 import argparse
 import sys
 import os
@@ -7,6 +9,7 @@ import shenasm
 
 
 def main():
+    print('Shenasm v2.0.2\n')
     args = get_args()
     result = 0
 
