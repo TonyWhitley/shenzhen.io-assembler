@@ -1,4 +1,5 @@
 from collections import namedtuple
+import re
 
 
 from .source import LineOfSource
@@ -39,6 +40,7 @@ class Parser(object):
         """
 
         text = line.text
+        text = re.sub(r'(^[ \t]*[-+@])', r'\1 ', text) #Allow for -+@ with no space after them
 
         # remove comments
         comment_start = text.find("#")

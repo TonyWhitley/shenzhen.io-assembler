@@ -7,3 +7,5 @@ __pycache__
 *.sln
 *.suo
 /dist
+/build/run_shenasm
+/run_shenasm.spec
